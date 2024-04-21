@@ -9,8 +9,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.gamear.gamear.Usuario;
-import com.gamear.gamear.UsuarioRepository;
+import com.gamear.gamear.Modelo.Usuario;
+import com.gamear.gamear.Repository.UsuarioRepository;
+
+import io.micrometer.common.util.StringUtils;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -30,7 +32,32 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> createUsuario(@Validated @RequestBody Usuario usuario) {
+    public ResponseEntity<?> createUsuario(@Validated @RequestBody Usuario usuario) {
+
+        // Verificar si alguno de los campos obligatorios está vacío
+        if (StringUtils.isEmpty(usuario.getNombre()) || StringUtils.isEmpty(usuario.getDocumento())
+                || StringUtils.isEmpty(usuario.getApellido()) ||
+                StringUtils.isEmpty(usuario.getCorreo()) || StringUtils.isEmpty(usuario.getContrasena())) {
+            // Si hay campos vacíos, devuelve un mensaje de error con código de estado 400
+            // Bad Request
+            return ResponseEntity.badRequest().body("Todos los campos son obligatorios.");
+        }
+
+        // Verificar si el correo ya está registrado
+        Usuario existingUsuarioCorreo = usuarioRepository.findByCorreo(usuario.getCorreo());
+        if (existingUsuarioCorreo != null) {
+            // Si el correo ya está registrado, devuelve un mensaje de error
+            return ResponseEntity.badRequest().body("El correo electrónico ya está registrado.");
+        }
+
+        // Verificar si el documento ya está registrado
+        Usuario existingUsuarioDocumento = usuarioRepository.findByDocumento(usuario.getDocumento());
+        if (existingUsuarioDocumento != null) {
+            // Si el documento ya está registrado, devuelve un mensaje de error
+            return ResponseEntity.badRequest().body("El documento ya está registrado.");
+        }
+
+        // Si el correo y el documento no están registrados, guarda el nuevo usuario
         usuario.setRol(1); // Asignar rol por defecto
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
         return ResponseEntity.ok(nuevoUsuario);
@@ -45,11 +72,12 @@ public class UsuarioController {
                     Usuario usuario = new Usuario();
                     usuario.setNombre(record.get("nombre"));
                     usuario.setApellido(record.get("apellido"));
+                    usuario.setDocumento(record.get("documento"));
                     usuario.setCorreo(record.get("correo"));
                     usuario.setEscuela(record.get("escuela"));
                     usuario.setRol(Integer.parseInt(record.get("rol")));
-                    usuario.setNumeroCelular(Integer.parseInt(record.get("numeroCelular")));
-                    usuario.setContraseña(record.get("contraseña"));
+                    usuario.setNumeroCelular(record.get("numeroCelular"));
+                    usuario.setContrasena(record.get("contrasena"));
                     usuarioRepository.save(usuario);
                 }
                 return ResponseEntity.ok("Usuarios cargados exitosamente!");

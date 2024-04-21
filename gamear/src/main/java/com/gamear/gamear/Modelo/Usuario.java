@@ -1,4 +1,4 @@
-package com.gamear.gamear;
+package com.gamear.gamear.Modelo;
 
 import jakarta.persistence.*;
 
@@ -8,38 +8,27 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private String nombre;
-
-    @Column(nullable = false)
     private String apellido;
-
-    @Column(nullable = false, unique = true)
+    private String documento;
     private String correo;
-
-    @Column(nullable = false)
     private String escuela;
-
-    @Column(nullable = false)
     private Integer rol;
+    private String numeroCelular;
+    private String contrasena;
 
-    @Column(nullable = false)
-    private Integer numeroCelular;
-
-    @Column(nullable = false)
-    private String contraseña;
-
-    public Usuario(Long id, String nombre, String apellido, String correo, String escuela, Integer rol,
-            Integer numeroCelular, String contraseña) {
+    public Usuario(Long id, String nombre, String apellido, String documento, String correo, String escuela,
+            Integer rol,
+            String numeroCelular, String contrasena) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.documento = documento;
         this.correo = correo;
         this.escuela = escuela;
         this.rol = rol;
         this.numeroCelular = numeroCelular;
-        this.contraseña = contraseña;
+        this.contrasena = contrasena;
     }
 
     public Usuario() {
@@ -64,6 +53,14 @@ public class Usuario {
 
     public String getApellido() {
         return apellido;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
     }
 
     public void setApellido(String apellido) {
@@ -94,20 +91,20 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public Integer getNumeroCelular() {
+    public String getNumeroCelular() {
         return numeroCelular;
     }
 
-    public void setNumeroCelular(Integer numeroCelular) {
+    public void setNumeroCelular(String numeroCelular) {
         this.numeroCelular = numeroCelular;
     }
 
-    public String getContraseña() {
-        return contraseña;
+    public String getContrasena() {
+        return contrasena;
     }
 
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
+    public void setContrasena(String contraseña) {
+        this.contrasena = contraseña;
     }
 
 }
