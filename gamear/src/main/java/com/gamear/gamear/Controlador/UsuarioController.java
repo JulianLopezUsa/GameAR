@@ -29,7 +29,7 @@ public class UsuarioController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @GetMapping("/all")
     public List<Usuario> getAllUsuarios() {
         return usuarioRepository.findAll();
@@ -38,28 +38,27 @@ public class UsuarioController {
     @PostMapping("/create")
     public ResponseEntity<?> createUsuario(@Validated @RequestBody Usuario usuario) {
         if (StringUtils.isEmpty(usuario.getNombre()) || StringUtils.isEmpty(usuario.getDocumento()) ||
-            StringUtils.isEmpty(usuario.getApellido()) || StringUtils.isEmpty(usuario.getCorreo()) ||
-            StringUtils.isEmpty(usuario.getContrasena())) {
+                StringUtils.isEmpty(usuario.getApellido()) || StringUtils.isEmpty(usuario.getCorreo()) ||
+                StringUtils.isEmpty(usuario.getContrasena())) {
             return ResponseEntity.badRequest().body("Todos los campos son obligatorios.");
         }
-    
+
         // Verificar si el correo ya está registrado
         if (usuarioRepository.findByCorreo(usuario.getCorreo()) != null) {
             return ResponseEntity.badRequest().body("El correo electrónico ya está registrado.");
         }
-    
+
         // Verificar si el documento ya está registrado
         if (usuarioRepository.findByDocumento(usuario.getDocumento()) != null) {
             return ResponseEntity.badRequest().body("El documento ya está registrado.");
         }
-    
+
         // Cifrar la contraseña antes de guardar el usuario
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
-    
+
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
         return ResponseEntity.ok(nuevoUsuario);
     }
-    
 
     @PostMapping("/upload-csv")
     public ResponseEntity<String> uploadCSVFile(@RequestParam("file") MultipartFile file) {
@@ -76,11 +75,28 @@ public class UsuarioController {
                     usuario.setRol(Integer.parseInt(record.get("rol")));
                     usuario.setNumeroCelular(record.get("numeroCelular"));
                     usuario.setContrasena(passwordEncoder.encode(record.get("contrasena")));
+
+                    if (StringUtils.isEmpty(usuario.getNombre()) || StringUtils.isEmpty(usuario.getDocumento()) ||
+                            StringUtils.isEmpty(usuario.getApellido()) || StringUtils.isEmpty(usuario.getCorreo()) ||
+                            StringUtils.isEmpty(usuario.getContrasena())) {
+                        return ResponseEntity.badRequest().body("Todos los campos son obligatorios.");
+                    }
+
+                    // Verificar si el correo ya está registrado
+                    if (usuarioRepository.findByCorreo(usuario.getCorreo()) != null) {
+                        return ResponseEntity.badRequest().body("El correo electrónico ya está registrado.");
+                    }
+
+                    // Verificar si el documento ya está registrado
+                    if (usuarioRepository.findByDocumento(usuario.getDocumento()) != null) {
+                        return ResponseEntity.badRequest().body("El documento ya está registrado.");
+                    }
                     usuarioRepository.save(usuario);
                 }
                 return ResponseEntity.ok("Usuarios cargados exitosamente!");
             } catch (Exception e) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al cargar el archivo: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Error al cargar el archivo: " + e.getMessage());
             }
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Archivo vacío");
