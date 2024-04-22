@@ -5,6 +5,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,9 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
     @GetMapping("/all")
     public List<Usuario> getAllUsuarios() {
         return usuarioRepository.findAll();
@@ -33,35 +37,29 @@ public class UsuarioController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createUsuario(@Validated @RequestBody Usuario usuario) {
-
-        // Verificar si alguno de los campos obligatorios está vacío
-        if (StringUtils.isEmpty(usuario.getNombre()) || StringUtils.isEmpty(usuario.getDocumento())
-                || StringUtils.isEmpty(usuario.getApellido()) ||
-                StringUtils.isEmpty(usuario.getCorreo()) || StringUtils.isEmpty(usuario.getContrasena())) {
-            // Si hay campos vacíos, devuelve un mensaje de error con código de estado 400
-            // Bad Request
+        if (StringUtils.isEmpty(usuario.getNombre()) || StringUtils.isEmpty(usuario.getDocumento()) ||
+            StringUtils.isEmpty(usuario.getApellido()) || StringUtils.isEmpty(usuario.getCorreo()) ||
+            StringUtils.isEmpty(usuario.getContrasena())) {
             return ResponseEntity.badRequest().body("Todos los campos son obligatorios.");
         }
-
+    
         // Verificar si el correo ya está registrado
-        Usuario existingUsuarioCorreo = usuarioRepository.findByCorreo(usuario.getCorreo());
-        if (existingUsuarioCorreo != null) {
-            // Si el correo ya está registrado, devuelve un mensaje de error
+        if (usuarioRepository.findByCorreo(usuario.getCorreo()) != null) {
             return ResponseEntity.badRequest().body("El correo electrónico ya está registrado.");
         }
-
+    
         // Verificar si el documento ya está registrado
-        Usuario existingUsuarioDocumento = usuarioRepository.findByDocumento(usuario.getDocumento());
-        if (existingUsuarioDocumento != null) {
-            // Si el documento ya está registrado, devuelve un mensaje de error
+        if (usuarioRepository.findByDocumento(usuario.getDocumento()) != null) {
             return ResponseEntity.badRequest().body("El documento ya está registrado.");
         }
-
-        // Si el correo y el documento no están registrados, guarda el nuevo usuario
-        usuario.setRol(1); // Asignar rol por defecto
+    
+        // Cifrar la contraseña antes de guardar el usuario
+        usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+    
         Usuario nuevoUsuario = usuarioRepository.save(usuario);
         return ResponseEntity.ok(nuevoUsuario);
     }
+    
 
     @PostMapping("/upload-csv")
     public ResponseEntity<String> uploadCSVFile(@RequestParam("file") MultipartFile file) {
@@ -77,7 +75,7 @@ public class UsuarioController {
                     usuario.setEscuela(record.get("escuela"));
                     usuario.setRol(Integer.parseInt(record.get("rol")));
                     usuario.setNumeroCelular(record.get("numeroCelular"));
-                    usuario.setContrasena(record.get("contrasena"));
+                    usuario.setContrasena(passwordEncoder.encode(record.get("contrasena")));
                     usuarioRepository.save(usuario);
                 }
                 return ResponseEntity.ok("Usuarios cargados exitosamente!");

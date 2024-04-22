@@ -23,7 +23,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/login", "/api/usuarios/create", "/api/usuarios/upload-csv").permitAll()
+                    .requestMatchers("/api/login", "/api/usuarios/all","/api/usuarios/create", "/api/usuarios/upload-csv").permitAll()
                     .anyRequest().authenticated()
                 )
                 .sessionManagement()
