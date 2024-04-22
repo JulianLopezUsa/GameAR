@@ -7,13 +7,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.User;
 
 import com.gamear.gamear.Modelo.Usuario;
 import com.gamear.gamear.Repository.UsuarioRepository;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-
     @Autowired
     private UsuarioRepository usuarioRepository;
 
@@ -23,6 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (usuario == null) {
             throw new UsernameNotFoundException("Usuario no encontrado con correo: " + username);
         }
-        return new org.springframework.security.core.userdetails.User(usuario.getCorreo(), usuario.getContrasena(), new ArrayList<>());
+        return new User(usuario.getCorreo(), usuario.getContrasena(), new ArrayList<>());
     }
 }
+

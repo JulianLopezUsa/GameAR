@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import com.gamear.gamear.Modelo.Usuario;
 import com.gamear.gamear.Repository.UsuarioRepository;
 import com.gamear.gamear.Security.JwtUtil;
-
+import org.springframework.security.core.userdetails.User;
 import io.micrometer.common.util.StringUtils;
 
 @RestController
@@ -33,17 +33,15 @@ public class LoginController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
         String correo = credentials.get("correo");
         String contrasena = credentials.get("contrasena");
-    
         if (StringUtils.isNotEmpty(correo)) {
             Usuario usuario = usuarioRepository.findByCorreo(correo);
             if (usuario != null && passwordEncoder.matches(contrasena, usuario.getContrasena())) {
-                // Crear UserDetails a partir de usuario
-                UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                    .username(usuario.getCorreo())
-                    .password(usuario.getContrasena())
-                    .authorities(new ArrayList<>()) // Añadir autoridades si es necesario
-                    .build();
-    
+
+                UserDetails userDetails = User.builder()
+                        .username(usuario.getCorreo())
+                        .password(usuario.getContrasena())
+                        .authorities(new ArrayList<>())
+                        .build();
                 String token = jwtUtil.generateToken(userDetails);
                 return ResponseEntity.ok().body("Bearer " + token);
             } else {
@@ -53,5 +51,5 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Correo electrónico requerido");
         }
     }
-    
+
 }
