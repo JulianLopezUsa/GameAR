@@ -26,12 +26,12 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Usuario> getAllUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createUsuario(@Validated @RequestBody Usuario usuario) {
 
         // Verificar si alguno de los campos obligatorios está vacío

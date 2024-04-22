@@ -1,14 +1,18 @@
 package com.gamear.gamear.Controlador;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.gamear.gamear.Modelo.Usuario;
 import com.gamear.gamear.Repository.UsuarioRepository;
+import com.gamear.gamear.Security.JwtUtil;
 
 import io.micrometer.common.util.StringUtils;
 
@@ -19,17 +23,29 @@ public class LoginController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @PostMapping
-    public ResponseEntity<String> login(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
         String correo = credentials.get("correo");
         String contrasena = credentials.get("contrasena");
-
-        // Validar que el correo electrónico no sea nulo ni esté vacío
+    
         if (StringUtils.isNotEmpty(correo)) {
             Usuario usuario = usuarioRepository.findByCorreo(correo);
-
-            if (usuario != null && usuario.getContrasena().equals(contrasena)) {
-                return ResponseEntity.ok("Login exitoso");
+            if (usuario != null && passwordEncoder.matches(contrasena, usuario.getContrasena())) {
+                // Crear UserDetails a partir de usuario
+                UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                    .username(usuario.getCorreo())
+                    .password(usuario.getContrasena())
+                    .authorities(new ArrayList<>()) // Añadir autoridades si es necesario
+                    .build();
+    
+                String token = jwtUtil.generateToken(userDetails);
+                return ResponseEntity.ok().body("Bearer " + token);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo o contraseña incorrectos");
             }
@@ -37,4 +53,5 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Correo electrónico requerido");
         }
     }
+    
 }
