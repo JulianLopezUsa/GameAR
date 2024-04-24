@@ -1,4 +1,4 @@
-package com.gamear.gamear.Controlador;
+package com.gamear.gamear.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,23 +8,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gamear.gamear.entity.Option;
-import com.gamear.gamear.service.OptionService;
+import com.gamear.gamear.entity.Question;
+import com.gamear.gamear.service.QuestionService;
 
 @RestController
-@RequestMapping("/option")
-public class OptionController {
+@RequestMapping("/question")
+public class QuestionController {
     @Autowired
-    private OptionService optionService;
+    private QuestionService questionService;
 
     @GetMapping("/{id}")
-    public Option getOptionById(@PathVariable Long id) {
-        return optionService.getOptionById(id);
+    public Question getQuestionById(@PathVariable Long id) {
+        return questionService.getQuestionById(id);
     }
 
     @PostMapping("/create")
-    public Option createOption(@RequestBody Option option) {
-        return optionService.createOption(option);
+    public Question createQuestion(@RequestBody Question question) {
+        return questionService.createQuestion(question);
     }
 
 }

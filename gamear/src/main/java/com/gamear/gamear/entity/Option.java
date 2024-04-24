@@ -4,12 +4,15 @@ import jakarta.persistence.*;
 
 @Entity
 public class Option {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    private String content;
+    private String optionText;
+    private Boolean isCorrect;
     
+    // Foreign Key
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;

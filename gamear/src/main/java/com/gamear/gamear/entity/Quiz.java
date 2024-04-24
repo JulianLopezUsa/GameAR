@@ -1,6 +1,4 @@
 package com.gamear.gamear.entity;
-import java.util.ArrayList;
-import java.util.List;
 
 import jakarta.persistence.*;
 
@@ -12,11 +10,12 @@ public class Quiz {
     private Long id;
     
     private String name;
-    private String topic;
-    private int totalScore;
+    private String description;
+    private int score;
     
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Question> questions = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "scenario_id")
+    private Scenario scenario;
     
 }
 
