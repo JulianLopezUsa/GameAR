@@ -26,7 +26,7 @@ public class OptionService {
         return optionRepository.save(option);
     }
 
-    public void deleteOption(Long id) {
+    public void deleteOptionById(Long id) {
         optionRepository.deleteById(id);
     }
    

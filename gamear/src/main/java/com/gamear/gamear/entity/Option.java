@@ -16,6 +16,12 @@ public class Option {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    
     
 }
 

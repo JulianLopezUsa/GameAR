@@ -26,7 +26,7 @@ public class ScenarioService {
         return scenarioRepository.save(scenario);
     }
 
-    public void deleteScenario(Long id) {
+    public void deleteScenarioById(Long id) {
         scenarioRepository.deleteById(id);
     }
 

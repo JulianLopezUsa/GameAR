@@ -20,6 +20,12 @@ public class Question {
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Option> options;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    
     
     
 }

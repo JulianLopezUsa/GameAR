@@ -16,6 +16,12 @@ public class Scenario {
     private double longitude;
 
     @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Quiz> quizs;
+    private List<Quiz> quizzes;
+
+    public void setId(Long idScenario) {
+        this.idScenario = idScenario;
+    }
+
+    
 
 }
