@@ -86,11 +86,11 @@ public class UsuarioController {
                 for (CSVRecord record : records) {
                     Usuario usuario = new Usuario();
                     usuario.setNombre(record.get("nombre"));
-                    usuario.setEstado(Integer.parseInt(record.get("estado")));
                     usuario.setDocumento(record.get("documento"));
                     usuario.setCorreo(record.get("correo"));
                     usuario.setEscuela(record.get("escuela"));
-                    usuario.setRol(Rol.valueOf(record.get("rol"))); // Convertir a mayúsculas y obtener el enum correspondiente
+                    usuario.setRol(Rol.valueOf(record.get("rol")));
+                    usuario.setEstado(Integer.parseInt(record.get("estado")));
                     usuario.setNumeroCelular(record.get("numeroCelular"));
                     usuario.setContrasena(passwordEncoder.encode(record.get("contrasena")));
 
