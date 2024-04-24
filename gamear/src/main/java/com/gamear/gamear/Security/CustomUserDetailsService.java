@@ -1,12 +1,15 @@
 package com.gamear.gamear.Security;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import com.gamear.gamear.Modelo.Usuario;
@@ -23,7 +26,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (usuario == null) {
             throw new UsernameNotFoundException("Usuario no encontrado con correo: " + username);
         }
-        return new User(usuario.getCorreo(), usuario.getContrasena(), new ArrayList<>());
+    
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRol().name()));
+    
+        return new User(usuario.getCorreo(), usuario.getContrasena(), authorities);
     }
+    
 }
 

@@ -28,16 +28,18 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/login", "/api/usuarios/all","/api/usuarios/create", "/api/usuarios/upload-csv").permitAll()
+                    .requestMatchers("/api/login", "/api/usuarios/upload-csv", "/api/usuarios/all", "/api/usuarios/create").permitAll()
+                    .requestMatchers("/api/usuarios/delete/**").hasAuthority("ROLE_ADMINISTRADOR")
                     .anyRequest().authenticated()
                 )
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+    
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
+    
         return http.build();
     }
+    
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

@@ -5,11 +5,15 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.gamear.gamear.Modelo.Rol;
 import com.gamear.gamear.Modelo.Usuario;
 import com.gamear.gamear.Repository.UsuarioRepository;
 
@@ -38,8 +42,7 @@ public class UsuarioController {
     @PostMapping("/create")
     public ResponseEntity<?> createUsuario(@Validated @RequestBody Usuario usuario) {
         if (StringUtils.isEmpty(usuario.getNombre()) || StringUtils.isEmpty(usuario.getDocumento()) ||
-                StringUtils.isEmpty(usuario.getApellido()) || StringUtils.isEmpty(usuario.getCorreo()) ||
-                StringUtils.isEmpty(usuario.getContrasena())) {
+                StringUtils.isEmpty(usuario.getCorreo()) || StringUtils.isEmpty(usuario.getContrasena())) {
             return ResponseEntity.badRequest().body("Todos los campos son obligatorios.");
         }
 
@@ -60,6 +63,21 @@ public class UsuarioController {
         return ResponseEntity.ok(nuevoUsuario);
     }
 
+    @PostMapping("/delete/{id}")
+    public ResponseEntity<?> deleteUsuario(@PathVariable Long id) {
+        // Obtener el usuario actualmente autenticado
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // Verificar si el usuario tiene el rol de administrador
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMINISTRADOR"))) {
+            // Solo los administradores pueden eliminar usuarios
+            usuarioRepository.deleteById(id);
+            return ResponseEntity.ok("Usuario eliminado correctamente");
+        } else {
+            // Si no es un administrador, devolver un error de autorización
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No tienes permiso para realizar esta acción");
+        }
+    }
+
     @PostMapping("/upload-csv")
     public ResponseEntity<String> uploadCSVFile(@RequestParam("file") MultipartFile file) {
         if (!file.isEmpty()) {
@@ -68,17 +86,16 @@ public class UsuarioController {
                 for (CSVRecord record : records) {
                     Usuario usuario = new Usuario();
                     usuario.setNombre(record.get("nombre"));
-                    usuario.setApellido(record.get("apellido"));
+                    usuario.setEstado(Integer.parseInt(record.get("estado")));
                     usuario.setDocumento(record.get("documento"));
                     usuario.setCorreo(record.get("correo"));
                     usuario.setEscuela(record.get("escuela"));
-                    usuario.setRol(Integer.parseInt(record.get("rol")));
+                    usuario.setRol(Rol.valueOf(record.get("rol"))); // Convertir a mayúsculas y obtener el enum correspondiente
                     usuario.setNumeroCelular(record.get("numeroCelular"));
                     usuario.setContrasena(passwordEncoder.encode(record.get("contrasena")));
 
                     if (StringUtils.isEmpty(usuario.getNombre()) || StringUtils.isEmpty(usuario.getDocumento()) ||
-                            StringUtils.isEmpty(usuario.getApellido()) || StringUtils.isEmpty(usuario.getCorreo()) ||
-                            StringUtils.isEmpty(usuario.getContrasena())) {
+                            StringUtils.isEmpty(usuario.getCorreo()) || StringUtils.isEmpty(usuario.getContrasena())) {
                         return ResponseEntity.badRequest().body("Todos los campos son obligatorios.");
                     }
 

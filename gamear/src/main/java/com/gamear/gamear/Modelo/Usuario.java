@@ -2,6 +2,7 @@ package com.gamear.gamear.Modelo;
 
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -9,20 +10,20 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private String apellido;
     private String documento;
     private String correo;
     private String escuela;
-    private Integer rol;
+    private Rol rol;
+    private Integer estado;
     private String numeroCelular;
     private String contrasena;
 
-    public Usuario(Long id, String nombre, String apellido, String documento, String correo, String escuela,
-            Integer rol,
+    public Usuario(Long id, String nombre, String documento, String correo, String escuela,
+            Rol rol, Integer estado,
             String numeroCelular, String contrasena) {
         this.id = id;
         this.nombre = nombre;
-        this.apellido = apellido;
+        this.estado = estado;
         this.documento = documento;
         this.correo = correo;
         this.escuela = escuela;
@@ -32,7 +33,7 @@ public class Usuario {
     }
 
     public Usuario() {
-        this.rol = 1; // Rol por defecto
+        this.rol = Rol.ESTUDIANTE; // Rol por defecto
     }
 
     public Long getId() {
@@ -51,9 +52,6 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public String getApellido() {
-        return apellido;
-    }
 
     public String getDocumento() {
         return documento;
@@ -63,9 +61,6 @@ public class Usuario {
         this.documento = documento;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
 
     public String getCorreo() {
         return correo;
@@ -83,11 +78,11 @@ public class Usuario {
         this.escuela = escuela;
     }
 
-    public Integer getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(Integer rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
     }
 
@@ -105,6 +100,14 @@ public class Usuario {
 
     public void setContrasena(String contraseña) {
         this.contrasena = contraseña;
+    }
+
+    public Integer getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Integer estado) {
+        this.estado = estado;
     }
 
 }
