@@ -1,5 +1,7 @@
 package com.gamear.gamear.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,5 +14,8 @@ public class Scenario {
     private String description;
     private double latitude;
     private double longitude;
+
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Quiz> quizs;
 
 }
