@@ -5,8 +5,6 @@ import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,15 +26,15 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/login", "/api/usuarios/upload-csv", "/api/usuarios/all", "/api/usuarios/create").permitAll()
-                    .requestMatchers("/api/usuarios/delete/**").hasAuthority("ROLE_ADMINISTRADOR")
+                    .requestMatchers("/api/login", "/api/usuarios/upload-csv", "/api/usuarios/all", 
+                    "/api/usuarios/create", "/api/usuarios/delete/**",
+                    "api/sesion/create","api/sesion/all", "api/sesion/update/**",
+                    "api/sesion/delete/**",
+                    "api/equipos/crear", "api/puntajes/asignar/**").permitAll()
                     .anyRequest().authenticated()
-                )
-                .sessionManagement()
+                ).sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-    
         return http.build();
     }
     

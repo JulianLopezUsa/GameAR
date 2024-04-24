@@ -34,6 +34,11 @@ public class UsuarioController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private boolean isCoordinator() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_COORDINADOR"));
+    }
+
     @GetMapping("/all")
     public List<Usuario> getAllUsuarios() {
         return usuarioRepository.findAll();
@@ -41,6 +46,11 @@ public class UsuarioController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createUsuario(@Validated @RequestBody Usuario usuario) {
+        if (!isCoordinator()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Acceso denegado. Solo coordinadores pueden realizar esta acción.");
+        }
+
         if (StringUtils.isEmpty(usuario.getNombre()) || StringUtils.isEmpty(usuario.getDocumento()) ||
                 StringUtils.isEmpty(usuario.getCorreo()) || StringUtils.isEmpty(usuario.getContrasena())) {
             return ResponseEntity.badRequest().body("Todos los campos son obligatorios.");
@@ -117,6 +127,27 @@ public class UsuarioController {
             }
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Archivo vacío");
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateUsuario(@PathVariable Long id, @Validated @RequestBody Usuario userDetails) {
+        if (!isCoordinator()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado. Solo coordinadores pueden realizar esta acción.");
+        }
+
+        return usuarioRepository.findById(id)
+            .map(usuario -> {
+                usuario.setNombre(userDetails.getNombre());
+                usuario.setDocumento(userDetails.getDocumento());
+                usuario.setCorreo(userDetails.getCorreo());
+                usuario.setEscuela(userDetails.getEscuela());
+                usuario.setRol(userDetails.getRol());
+                usuario.setEstado(userDetails.getEstado());
+                usuario.setNumeroCelular(userDetails.getNumeroCelular());
+                usuario.setContrasena(userDetails.getContrasena());  // Considera cifrar la contraseña si no lo has hecho antes
+                Usuario updatedUsuario = usuarioRepository.save(usuario);
+                return ResponseEntity.ok(updatedUsuario);
+            }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 }
