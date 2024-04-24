@@ -1,5 +1,8 @@
 package com.gamear.gamear.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +14,21 @@ public class OptionService {
     @Autowired
     private OptionRepository optionRepository;
 
-    public Option getOptionById(Long id) {
-        return optionRepository.findById(id).orElse(null);
+    public List<Option> getAllOptions() {
+        return optionRepository.findAll();
     }
 
-    public Option createOption(Option option) {
+    public Optional<Option> getOptionById(Long id) {
+        return optionRepository.findById(id);
+    }
+
+    public Option saveOption(Option option) {
         return optionRepository.save(option);
     }
+
+    public void deleteOption(Long id) {
+        optionRepository.deleteById(id);
+    }
+   
 
 }

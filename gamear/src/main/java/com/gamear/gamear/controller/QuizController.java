@@ -26,7 +26,7 @@ public class QuizController {
 
     @PostMapping("/create")
     public Quiz createQuiz(@RequestBody Quiz quiz) {
-        return quizService.createQuiz(quiz);
+        return quizService.saveQuiz(quiz);
     }
 
 }

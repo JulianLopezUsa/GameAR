@@ -15,7 +15,7 @@ public class QuizService {
     @Autowired
     private QuizRepository quizRepository;
 
-    public Quiz createQuiz(Quiz quiz) {
+    public Quiz saveQuiz(Quiz quiz) {
         return quizRepository.save(quiz);
     }
 
@@ -31,5 +31,4 @@ public class QuizService {
         quizRepository.deleteById(id);
     }
 
-    // Otros métodos según tus necesidades
 }
