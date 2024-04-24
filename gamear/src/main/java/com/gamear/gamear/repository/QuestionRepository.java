@@ -1,8 +1,13 @@
 package com.gamear.gamear.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.gamear.gamear.entity.Question;
 
-public interface QuestionRepository extends CrudRepository<Question, Long> {
+@Repository
+public interface QuestionRepository extends JpaRepository<Question, Long> {
+    List<Question> findByStatement(String statement);
 }

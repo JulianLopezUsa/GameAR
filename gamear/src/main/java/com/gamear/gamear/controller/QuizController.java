@@ -1,5 +1,7 @@
 package com.gamear.gamear.controller;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +20,7 @@ public class QuizController {
     private QuizService quizService;
 
     @GetMapping("/{id}")
-    public Quiz getQuizById(@PathVariable Long id) {
+    public Optional getQuizById(@PathVariable Long id) {
         return quizService.getQuizById(id);
     }
 

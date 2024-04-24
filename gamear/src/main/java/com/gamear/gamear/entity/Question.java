@@ -1,5 +1,7 @@
 package com.gamear.gamear.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 
@@ -15,6 +17,9 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id")
     private Quiz quiz;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Option> options;
     
     
 }
