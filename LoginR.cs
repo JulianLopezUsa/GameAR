@@ -6,7 +6,6 @@ using UnityEngine.Networking;
 using System.Security.Cryptography;
 using System.Text;
 
-
 public class LoginR : MonoBehaviour
 {
     private const string llaveS = "UG9ycXVlIG1pIG1lbG9kw61hIGZhdm9yaXRhIGVzIHR1IHZveiBZIHNpbiBkYXJubycgY3VlbnRhLCAndGFtbycgZW4gZWwgbWlzbW8gdG9ubw==";
@@ -18,7 +17,7 @@ public class LoginR : MonoBehaviour
     public GameObject Loginm;
     public GameObject USA;
     public Text mensajeText;
-    public string url = "http://172.26.2.166:8080/api/login";
+    public string url = "http://172.26.3.33:8080/api/login";
 
     public void IniciarSesion()
     {
@@ -27,8 +26,8 @@ public class LoginR : MonoBehaviour
 
         // Hashear la contraseña antes de enviarla
         string contrasenaHash = HashContrasena(contrasena);
-        string contrasenaHash2 = HashContrasena(contrasenaHash+llaveS);
-  
+        string contrasenaHash2 = HashContrasena(contrasenaHash + llaveS);
+
         StartCoroutine(EnviarCredenciales(correo, contrasenaHash2));
     }
 
@@ -63,20 +62,50 @@ public class LoginR : MonoBehaviour
         // Enviar la solicitud y esperar la respuesta
         yield return request.SendWebRequest();
 
+
         // Manejar la respuesta
         if (request.result == UnityWebRequest.Result.Success)
-        {   
+        {  
             JSONNode responseJson = JSON.Parse(request.downloadHandler.text);
-        
+           int numeroRol = responseJson["rol"].AsInt;
+
+                string nombreRol = ObtenerNombreRol(numeroRol); // Obtener el nombre del rol legible
+                string nombre = responseJson["nombre"];
+                Debug.Log("Login exitoso. Rol: " + nombreRol + ", Nombre: " + nombre);
+                
+        if (nombreRol =="Admin")
+        {
+            
             Loginm.SetActive(false);
             USA.SetActive(false); 
             Roles.SetActive(true);
             RolAdmin.SetActive(true); 
+        }else{
+
+            Loginm.SetActive(false);
+            USA.SetActive(false); 
+            Roles.SetActive(true);
+            Jugador.SetActive(true); 
+
+
+        }
         }
         else
         { 
             Loginm.SetActive(true); // Ocultar el panel de éxito
             mensajeText.text = "Correo o contraseña incorrectos";
+        }
+    }
+     public string ObtenerNombreRol(int numeroRol)
+    {
+        switch (numeroRol)
+        {
+            case 1:
+                return "Jugador";
+            case 2:
+                return "Admin";
+            default:
+                return "Rol Desconocido";
         }
     }
 }

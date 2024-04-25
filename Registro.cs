@@ -9,33 +9,29 @@ using System.Text;
 public class Login : MonoBehaviour
 {   private const string llaveS = "UG9ycXVlIG1pIG1lbG9kw61hIGZhdm9yaXRhIGVzIHR1IHZveiBZIHNpbiBkYXJubycgY3VlbnRhLCAndGFtbycgZW4gZWwgbWlzbW8gdG9ubw==";
     public InputField nombreInput;
-    public InputField apellidoInput;
     public InputField documentoInput;
     public InputField correoInput;
     public InputField escuelaInput;
-    public InputField celularInput;
     public InputField contrasenaInput;
     public GameObject Loginm;
     public GameObject Registre;
 
     public Text mensajeText;
 
-    public string url = "http://172.26.2.166:8080/api/usuarios";
+    public string url = "http://172.26.3.33:8080/api/usuarios";
     public int idRol = 1;
 
     public void EnviarDatos()
     {
-        string nombre = nombreInput.text;
-        string apellido = apellidoInput.text;
+        string nombres = nombreInput.text;
         string documento = documentoInput.text;
         string correo = correoInput.text;
         string escuela = escuelaInput.text;
         string contrasena = contrasenaInput.text;
-        string celular = celularInput.text;
         
 
-        if (string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(apellido) || string.IsNullOrEmpty(documento) || string.IsNullOrEmpty(correo) ||
-            string.IsNullOrEmpty(escuela) || string.IsNullOrEmpty(celular) || string.IsNullOrEmpty(contrasena))
+        if (string.IsNullOrEmpty(nombres) ||  string.IsNullOrEmpty(documento) || string.IsNullOrEmpty(correo) ||
+            string.IsNullOrEmpty(escuela) ||  string.IsNullOrEmpty(contrasena))
         {
             mensajeText.text = "Todos los campos son obligatorios.";
             return;
@@ -45,13 +41,11 @@ public class Login : MonoBehaviour
         string contrasenaHash2 = HashContrasena(contrasenaHash+llaveS);
        
         JSONNode json = new JSONObject();
-        json["nombre"] = nombre;
-        json["apellido"] = apellido;
+        json["nombres"] = nombres;
         json["documento"] = documento;
         json["correo"] = correo;
         json["escuela"] = escuela;
         json["rol"] = idRol;
-        json["numeroCelular"] = celular;
         json["contrasena"] = contrasenaHash2;
 
         StartCoroutine(EnviarInformacion(json));
