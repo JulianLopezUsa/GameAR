@@ -1,0 +1,4 @@
+#navbarContainer {
+    float: left; /* Alinear a la izquierda */
+    margin-right: 20px; /* Margen derecho para separarlo del contenido */
+}
