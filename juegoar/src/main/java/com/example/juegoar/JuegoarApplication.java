@@ -1,11 +1,13 @@
+package com.example.juegoar;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GamearApplication {
+public class JuegoarApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GamearApplication.class, args);
+		SpringApplication.run(JuegoarApplication.class, args);
 	}
 
 }

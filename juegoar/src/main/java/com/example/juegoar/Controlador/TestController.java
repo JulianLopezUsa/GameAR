@@ -1,4 +1,4 @@
-package com.gamear.gamear.Controlador;
+package com.example.juegoar.Controlador;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,12 +1,12 @@
-package com.gamear.gamear.Controlador;
+package com.example.juegoar.Controlador;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import com.gamear.gamear.Usuario;
-import com.gamear.gamear.UsuarioRepository;
+import com.example.juegoar.Usuario;
+import com.example.juegoar.UsuarioRepository;
 
 import io.micrometer.common.util.StringUtils;
 

@@ -1,4 +1,4 @@
-package com.Controlador;
+package com.example.juegoar.Controlador;
 
 import java.util.Map;
 
@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.gamear.gamear.Usuario;
-import com.gamear.gamear.UsuarioRepository;
+import com.example.juegoar.Usuario;
+import com.example.juegoar.UsuarioRepository;
 
 import io.micrometer.common.util.StringUtils;
 

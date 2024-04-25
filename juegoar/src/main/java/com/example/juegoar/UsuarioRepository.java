@@ -1,3 +1,4 @@
+package com.example.juegoar;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

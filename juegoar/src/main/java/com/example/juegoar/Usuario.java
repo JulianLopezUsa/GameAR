@@ -1,3 +1,5 @@
+package com.example.juegoar;
+
 import jakarta.persistence.*;
 
 @Entity
