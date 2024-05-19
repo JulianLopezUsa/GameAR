@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="../assets/js/color-modes.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"
+    />
+    <link href="/css/bootsstrap.min.css" type="text/css" rel="stylesheet" />
+    <link href="/css/styleMenu.css" type="text/css" rel="stylesheet" />
+</head>
+  <body>
+    <main class="d-flex flex-nowrap">
+      <div
+        class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark"
+        style="width: 280px"
+      >
+        <a
+          href=""
+          class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
+        >
+          <svg class="bi pe-none me-2" width="40" height="32">
+            <use xlink:href="#bootstrap" />
+          </svg>
+          <span class="fs-4">AR Game</span>
+        </a>
+        <hr />
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="/menu" class="nav-link active" aria-current="page">
+              <svg class="bi pe-none me-2" width="16" height="16">
+                <use xlink:href="#home" />
+              </svg>
+              Inicio
+            </a>
+          </li>
+          <li>
+            <a href="/usuariosL" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16">
+                <use xlink:href="#speedometer2" />
+              </svg>
+              Usuarios
+            </a>
+          </li>
+          <li>
+            <a href="/Partida" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16">
+                <use xlink:href="#table" />
+              </svg>
+              Partidas
+            </a>
+          </li>
+          <li></li>
+        </ul>
+        <hr />
+        <div class="dropdown">
+          <a
+            href="#"
+            class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src="https://github.com/mdo.png"
+              alt
+              width="32"
+              height="32"
+              class="rounded-circle me-2"
+            />
+            <strong>Julian Lopez</strong>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+            <li><a class="dropdown-item" href="#">perfil</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="index.html">Cerrar Sesion</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="b-example-divider b-example-vr"></div>
+      <div class="container">
+        <h1>Carga masiva de usuarios</h1>
+        <div class="form-group">
+          <label for="archivoUsuarios"
+            >Cargar usuarios desde archivo .csv:</label
+          >
+          <input type="file" id="archivoUsuarios" accept=".csv" />
+          <button id="btnCargarUsuarios" class="btn btn-primary">Cargar</button>
+        </div>
+      </div>
+      <script src="/js/bootstrap.bundle.min.js"></script>
+      <script>
+        
+        document
+          .getElementById("btnCargarUsuarios")
+          .addEventListener("click", async function () {
+            const fileInput = document.getElementById("archivoUsuarios");
+            const file = fileInput.files[0];
+
+            if (!file) {
+              alert("Por favor, selecciona un archivo CSV.");
+              return;
+            }
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const token = localStorage.getItem("jwt");
+            console.log(token);
+            if (!token) {
+              alert(
+                "No se encontró el token de autenticación. Por favor, inicia sesión."
+              );
+              return;
+            }
+
+            try {
+              const response = await fetch("/api/usuarios/upload-csv", {
+                method: "POST",
+                headers: {
+                  Authorization: "Bearer " + token, // Asegúrate de que el token esté en el formato correcto
+                },
+                body: formData,
+              });
+
+              if (response.ok) {
+                const result = await response.text();
+                alert(result);
+                // Aquí puedes redirigir o actualizar la interfaz según sea necesario
+              } else {
+                const errorText = await response.text();
+                alert("Error al cargar el archivo CSV: " + errorText);
+              }
+            } catch (error) {
+              alert(
+                "Hubo un error al conectar con el servidor: " + error.message
+              );
+            }
+          });
+      </script>
+    </main>
+  </body>
+</html>

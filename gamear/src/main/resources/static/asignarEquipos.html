@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="../assets/js/color-modes.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"
+    />
+    <link href="/css/bootsstrap.min.css" type="text/css" rel="stylesheet" />
+    <link href="/css/styleMenu.css" type="text/css" rel="stylesheet" />
+  </head>
+  <body>
+    <main class="d-flex flex-nowrap">
+      <div
+        class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark"
+        style="width: 280px"
+      >
+        <a
+          href=""
+          class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
+        >
+          <svg class="bi pe-none me-2" width="40" height="32">
+            <use xlink:href="#bootstrap" />
+          </svg>
+          <span class="fs-4">AR Game</span>
+        </a>
+        <hr />
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="/menu" class="nav-link active" aria-current="page">
+              <svg class="bi pe-none me-2" width="16" height="16">
+                <use xlink:href="#home" />
+              </svg>
+              Inicio
+            </a>
+          </li>
+          <li>
+            <a href="/usuariosL" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16">
+                <use xlink:href="#speedometer2" />
+              </svg>
+              Usuarios
+            </a>
+          </li>
+          <li>
+            <a href="/Partida" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16">
+                <use xlink:href="#table" />
+              </svg>
+              Partidas
+            </a>
+          </li>
+          <li></li>
+        </ul>
+        <hr />
+        <div class="dropdown">
+          <a
+            href="#"
+            class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src="https://github.com/mdo.png"
+              alt
+              width="32"
+              height="32"
+              class="rounded-circle me-2"
+            />
+            <strong>Julian Lopez</strong>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+            <li><a class="dropdown-item" href="#">Perfil</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="index.html">Cerrar Sesion</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="b-example-divider b-example-vr"></div>
+      <div class="container">
+        <h1>Gestión de Sesiones</h1>
+        <div class="form-group">
+          <label for="sesiones">Seleccionar sesión:</label>
+          <select id="sesiones" class="form-select"></select>
+        </div>
+        <div class="form-group">
+          <label for="usuarios">Seleccionar usuarios:</label>
+          <div id="usuarios" class="list-group"></div>
+        </div>
+        <button id="btnAsignarUsuarios" class="btn btn-primary">
+          Asignar usuarios a la sesión
+        </button>
+      </div>
+      <script src="/js/bootstrap.bundle.min.js"></script>
+      <script>
+        async function cargarSesiones() {
+          try {
+            const response = await fetch("/api/sesion/all");
+            if (response.ok) {
+              const sesiones = await response.json();
+              const sesionesSelect = document.getElementById("sesiones");
+              sesionesSelect.innerHTML = "";
+              sesiones.forEach((sesion) => {
+                const option = document.createElement("option");
+                option.value = sesion.id;
+                option.textContent = sesion.nombre;
+                sesionesSelect.appendChild(option);
+              });
+            } else {
+              alert("Error al cargar las sesiones");
+            }
+          } catch (error) {
+            alert("Error al conectar con el servidor: " + error.message);
+          }
+        }
+
+        async function cargarUsuarios() {
+          try {
+            const response = await fetch("/api/usuarios/all");
+            if (response.ok) {
+              const usuarios = await response.json();
+              const usuariosDiv = document.getElementById("usuarios");
+              usuariosDiv.innerHTML = "";
+              usuarios.forEach((usuario) => {
+                const usuarioItem = document.createElement("div");
+                usuarioItem.className =
+                  "list-group-item list-group-item-action";
+                usuarioItem.innerHTML = `
+                <input type="checkbox" value="${usuario.id}" /> ${usuario.nombre}
+              `;
+                usuariosDiv.appendChild(usuarioItem);
+              });
+            } else {
+              alert("Error al cargar los usuarios");
+            }
+          } catch (error) {
+            alert("Error al conectar con el servidor: " + error.message);
+          }
+        }
+
+        document
+          .getElementById("btnAsignarUsuarios")
+          .addEventListener("click", async function () {
+            const sesionId = document.getElementById(
+              "sesiones"
+            ).value;
+            const checkboxes = document.querySelectorAll(
+              '#usuarios input[type="checkbox"]:checked'
+            );
+            const usuariosSeleccionados = Array.from(checkboxes).map(
+              (checkbox) => checkbox.value
+            );
+
+            if (!sesionId) {
+              alert("Por favor, selecciona una sesión.");
+              return;
+            }
+
+            if (usuariosSeleccionados.length === 0) {
+              alert("Por favor, selecciona al menos un usuario.");
+              return;
+            }
+
+            const token = localStorage.getItem("jwt");
+            if (!token) {
+              alert(
+                "No se encontró el token de autenticación. Por favor, inicia sesión."
+              );
+              return;
+            }
+
+            try {
+              const response = await fetch(
+                `/api/puntajes/asignar/${sesionId}`,
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + token,
+                  },
+                  body: JSON.stringify(usuariosSeleccionados), // Enviar un array de IDs
+                }
+              );
+
+              if (response.ok) {
+                alert("Usuarios asignados exitosamente a la sesión");
+              } else {
+                const errorText = await response.text();
+                alert("Error al asignar usuarios a la sesión: " + errorText);
+              }
+            } catch (error) {
+              alert(
+                "Hubo un error al conectar con el servidor: " + error.message
+              );
+            }
+          });
+
+        document.addEventListener("DOMContentLoaded", function () {
+          cargarSesiones();
+          cargarUsuarios();
+        });
+      </script>
+    </main>
+  </body>
+</html>

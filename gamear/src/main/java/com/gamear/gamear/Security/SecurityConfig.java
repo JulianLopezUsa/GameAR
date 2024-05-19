@@ -16,7 +16,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -24,20 +23,29 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/login", "/api/usuarios/upload-csv", "/api/usuarios/all", 
+            .csrf().disable()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/api/login",
+                    "/api/usuarios/upload-csv", "/api/usuarios/all", 
                     "/api/usuarios/create", "/api/usuarios/delete/**",
                     "api/sesion/create","api/sesion/all", "api/sesion/update/**",
                     "api/sesion/delete/**",
-                    "api/equipos/crear", "api/puntajes/asignar/**").permitAll()
-                    .anyRequest().authenticated()
-                ).sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                    "api/equipos/crear", "api/puntajes/asignar/**",
+                    "/login", "/menu", "crearSesion","/", "/index.html", "/navbar.html", "/crearSesion.html", "cargarUsuarios.html",
+                     "/asignarEquipos.html","asignarEquipos" ,"cargarUsuarios",
+                    "/css/**", "/js/**"  // Asegúrate de que estos patrones estén permitidos sin autenticación
+                ).permitAll()
+                .anyRequest().authenticated()
+            )
+            .sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        
+        http.cors();
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        
         return http.build();
     }
-    
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -49,8 +57,7 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-    
-    
+
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter();

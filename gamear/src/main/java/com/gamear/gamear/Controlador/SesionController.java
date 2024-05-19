@@ -33,9 +33,9 @@ public class SesionController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllSesions() {
-        if (!checkCoordinatorRole()) {
+        /*if (!checkCoordinatorRole()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado");
-        }
+        }*/
         return ResponseEntity.ok(sesionRepository.findAll());
     }
 

@@ -43,7 +43,8 @@ public class LoginController {
                         .authorities(new ArrayList<>())
                         .build();
                 String token = jwtUtil.generateToken(userDetails);
-                return ResponseEntity.ok().body("Bearer " + token);
+                
+                return ResponseEntity.ok().body(token);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Correo o contraseña incorrectos");
             }
