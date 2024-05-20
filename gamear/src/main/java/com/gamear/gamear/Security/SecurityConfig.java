@@ -33,7 +33,7 @@ public class SecurityConfig {
                     "api/sesion/delete/**",
                     "api/equipos/crear", "api/puntajes/asignar/**",
                     "/login", "/menu", "crearSesion","/", "/index.html", "/navbar.html", "/crearSesion.html", "cargarUsuarios.html",
-                     "/asignarEquipos.html","asignarEquipos" ,"cargarUsuarios",
+                     "/asignarEquipos.html","asignarEquipos" ,"cargarUsuarios", "crearEquipos", "/crearEquipos.html",
                     "/css/**", "/js/**"  // Asegúrate de que estos patrones estén permitidos sin autenticación
                 ).permitAll()
                 .anyRequest().authenticated()

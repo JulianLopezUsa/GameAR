@@ -30,4 +30,9 @@ public class WebController {
     public String cargarUsuarios() {
         return "cargarUsuarios.html";
     }
+
+    @GetMapping("/crearEquipos")
+    public String crearEquipos() {
+        return "crearEquipos.html";
+    }
 }

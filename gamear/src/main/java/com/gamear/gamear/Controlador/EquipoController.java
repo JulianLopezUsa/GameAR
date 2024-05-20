@@ -20,6 +20,7 @@ public class EquipoController {
     
     @PostMapping("/crear")
     public ResponseEntity<?> createEquipo(@Validated @RequestBody Equipo equipo) {
+        System.out.println("nnnnnnnnnnnnnnnn" +equipo);
         Equipo nuevoEquipo = equipoRepository.save(equipo);
         return ResponseEntity.ok(nuevoEquipo);
     }

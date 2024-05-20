@@ -130,8 +130,8 @@
           <div class="col">
             <div class="card h-100">
               <div class="card-body text-center">
-                <h5 class="card-title">Eliminar equipos</h5>
-                <p class="card-text">Elimina equipos existentes.</p>
+                <h5 class="card-title">Eliminar sesiones</h5>
+                <p class="card-text">Elimina sesiones existentes.</p>
                 <button id="btnEliminarEquipos" class="btn btn-primary">
                   Eliminar equipos
                 </button>
@@ -158,6 +158,12 @@
           .getElementById("btnCargarUsuarios")
           .addEventListener("click", async function () {
             window.location.href = '/cargarUsuarios';
+          });
+      
+        document
+          .getElementById("btnCrearEquipos")
+          .addEventListener("click", async function () {
+            window.location.href = '/crearEquipos';
           });
       </script>
     </main>
