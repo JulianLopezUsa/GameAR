@@ -29,5 +29,4 @@ public class ScenarioService {
     public void deleteScenarioById(Long id) {
         scenarioRepository.deleteById(id);
     }
-
 }

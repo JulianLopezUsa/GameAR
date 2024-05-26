@@ -9,5 +9,4 @@ import com.gamear.gamear.entity.Scenario;
 
 @Repository
 public interface ScenarioRepository extends JpaRepository<Scenario, Long> {
-    List<Scenario> findByName(String name);
 }

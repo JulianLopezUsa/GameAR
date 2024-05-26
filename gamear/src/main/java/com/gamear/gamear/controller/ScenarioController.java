@@ -39,7 +39,7 @@ public class ScenarioController {
 
     @PutMapping("/{id}")
     public Scenario updateScenario(@PathVariable Long id, @RequestBody Scenario scenario) {
-        scenario.setId(id); // Establece el ID en el objeto antes de guardar
+        scenario.setIdScenario(id); // Set the ID in the object before saving
         return scenarioService.saveScenario(scenario);
     }
 
